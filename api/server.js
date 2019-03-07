@@ -31,9 +31,15 @@ server.post('/fighters', (req, res) => {
 });
 
 server.delete('/fighters/:id', async (req, res) => {
-    const rows = await fighters.remove(req.params.id);
-  
-    res.status(200).json(rows);
+    fighters.remove(req.params.id)
+        .then(isDel => {
+            isDel ?
+            res.status(204).end()
+            : res.status(404).json({ error: 'Fighter with that ID does not exist' })
+        })
+        .catch(err => {
+            res.status(500).json({ error: 'Could not remove fighter' })
+        });
   });
 
 module.exports = server;
